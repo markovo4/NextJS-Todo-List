@@ -19,6 +19,7 @@ const SignUpForm = () => {
     const submitHandler = (values: typeof initialValues) => {
         Cookies.set('authorized', 'true');
         const token = Cookies.get('authorized');
+        console.log(values)
         console.log(token)
         resetForm()
         router.push('/todoList')
