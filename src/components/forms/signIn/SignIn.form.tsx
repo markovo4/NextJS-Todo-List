@@ -1,6 +1,7 @@
 'use client';
 import {useFormik} from "formik";
 import signInValidationSchema from "@/components/forms/signIn/signIn.validationSchema";
+import {logUser} from "@/app/(pages)/auth/actions";
 
 const initialValues = {
     email: '',
@@ -22,7 +23,7 @@ const SignInForm = () => {
 
     const {values, handleChange, handleSubmit, resetForm, errors} = formik;
     return (
-        <form className={'flex flex-col items-center gap-3'} onSubmit={handleSubmit}>
+        <form className={'flex flex-col items-center gap-3'} action={logUser}>
             <div className={'flex flex-col'}>
                 <label htmlFor={'email'}>Email</label>
                 <input

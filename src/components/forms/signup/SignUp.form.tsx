@@ -4,12 +4,13 @@ import {useFormik} from "formik";
 import Cookies from 'js-cookie';
 import signUpValidationSchema from "@/components/forms/signup/signUp.validationSchema";
 import {useRouter} from "next/navigation";
+import {regUser} from "@/app/(pages)/auth/actions";
 
 const initialValues = {
     email: '',
     password: '',
-    firstName: '',
-    lastName: '',
+    // firstName: '',
+    // lastName: '',
 }
 
 const SignUpForm = () => {
@@ -19,8 +20,7 @@ const SignUpForm = () => {
     const submitHandler = (values: typeof initialValues) => {
         Cookies.set('authorized', 'true');
         const token = Cookies.get('authorized');
-        console.log(values)
-        console.log(token)
+
         resetForm()
         router.push('/todoList')
     }
@@ -33,31 +33,31 @@ const SignUpForm = () => {
     const {values, handleChange, handleSubmit, resetForm, errors} = formik;
 
     return (
-        <form className={'flex flex-col items-center gap-3'} onSubmit={handleSubmit}>
-            <div className={'flex flex-col'}>
-                <label htmlFor={'firstName'}>First name</label>
-                <input
-                    className={'bg-white rounded-md  text-black px-1'}
-                    type={'firstName'}
-                    id={'firstName'}
-                    name={'firstName'}
-                    value={values.firstName}
-                    onChange={handleChange}
-                />
-                <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.firstName}</small>
-            </div>
-            <div className={'flex flex-col'}>
-                <label htmlFor={'lastName'}>Last name</label>
-                <input
-                    className={'bg-white rounded-md  text-black px-1'}
-                    type={'lastName'}
-                    id={'lastName'}
-                    name={'lastName'}
-                    value={values.lastName}
-                    onChange={handleChange}
-                />
-                <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.lastName}</small>
-            </div>
+        <form className={'flex flex-col items-center gap-3'} action={regUser}>
+            {/*<div className={'flex flex-col'}>*/}
+            {/*    <label htmlFor={'firstName'}>First name</label>*/}
+            {/*    <input*/}
+            {/*        className={'bg-white rounded-md  text-black px-1'}*/}
+            {/*        type={'firstName'}*/}
+            {/*        id={'firstName'}*/}
+            {/*        name={'firstName'}*/}
+            {/*        value={values.firstName}*/}
+            {/*        onChange={handleChange}*/}
+            {/*    />*/}
+            {/*    <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.firstName}</small>*/}
+            {/*</div>*/}
+            {/*<div className={'flex flex-col'}>*/}
+            {/*    <label htmlFor={'lastName'}>Last name</label>*/}
+            {/*    <input*/}
+            {/*        className={'bg-white rounded-md  text-black px-1'}*/}
+            {/*        type={'lastName'}*/}
+            {/*        id={'lastName'}*/}
+            {/*        name={'lastName'}*/}
+            {/*        value={values.lastName}*/}
+            {/*        onChange={handleChange}*/}
+            {/*    />*/}
+            {/*    <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.lastName}</small>*/}
+            {/*</div>*/}
             <div className={'flex flex-col'}>
                 <label htmlFor={'email'}>Email</label>
                 <input
