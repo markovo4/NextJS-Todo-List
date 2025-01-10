@@ -13,10 +13,9 @@ export async function POST(request: Request) {
 
     if (!result) {
         return Response.json({
-                message: {
-                    email: 'No Such email exists',
-                    password: 'No Such password exists'
-                }
+                email: 'No Such email exists',
+                password: 'No Such password exists'
+
             },
             {status: 404})
     }

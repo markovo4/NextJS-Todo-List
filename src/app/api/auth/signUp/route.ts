@@ -3,11 +3,11 @@ import {createHash} from "node:crypto";
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const {email, password} = body;
+    const {email, password, name} = body;
 
     const hash = createHash('sha256').update(password).digest('hex')
 
-    const user = {email, password: hash}
+    const user = {email, password: hash, name}
     console.log(hash)
 
     const result = await prisma.user.create({

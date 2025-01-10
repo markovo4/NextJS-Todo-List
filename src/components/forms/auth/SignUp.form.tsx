@@ -7,6 +7,7 @@ import clsx from "clsx";
 export const initialValues = {
     email: '',
     password: '',
+    name: '',
 }
 
 const SignUpForm = () => {
@@ -44,7 +45,19 @@ const SignUpForm = () => {
                     onChange={handleChange}
                 />
                 <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.password}</small>
+            </div>
 
+            <div className={'flex flex-col'}>
+                <label htmlFor={'name'}>Name</label>
+                <input
+                    className={'bg-white rounded-md  text-black px-1'}
+                    type={'text'}
+                    id={'name'}
+                    name={'name'}
+                    value={formData.name}
+                    onChange={handleChange}
+                />
+                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.name}</small>
             </div>
 
             <button type={'submit'}
