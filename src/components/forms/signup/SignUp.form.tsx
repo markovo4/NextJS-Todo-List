@@ -1,63 +1,25 @@
 'use client';
 
-import {useFormik} from "formik";
-import Cookies from 'js-cookie';
-import signUpValidationSchema from "@/components/forms/signup/signUp.validationSchema";
-import {useRouter} from "next/navigation";
 import {regUser} from "@/app/(pages)/auth/actions";
+import React, {useActionState, useState} from "react";
 
-const initialValues = {
+export const initialValues = {
     email: '',
     password: '',
-    // firstName: '',
-    // lastName: '',
 }
 
 const SignUpForm = () => {
 
-    const router = useRouter();
-
-    const submitHandler = (values: typeof initialValues) => {
-        Cookies.set('authorized', 'true');
-        const token = Cookies.get('authorized');
-
-        resetForm()
-        router.push('/todoList')
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target
+        setFormData({...formData, [name]: value})
     }
 
-    const formik = useFormik({
-        initialValues,
-        onSubmit: submitHandler,
-        validationSchema: signUpValidationSchema
-    });
-    const {values, handleChange, handleSubmit, resetForm, errors} = formik;
+    const [formData, setFormData] = useState(initialValues)
+    const [state, action, pending] = useActionState(regUser, null)
 
     return (
-        <form className={'flex flex-col items-center gap-3'} action={regUser}>
-            {/*<div className={'flex flex-col'}>*/}
-            {/*    <label htmlFor={'firstName'}>First name</label>*/}
-            {/*    <input*/}
-            {/*        className={'bg-white rounded-md  text-black px-1'}*/}
-            {/*        type={'firstName'}*/}
-            {/*        id={'firstName'}*/}
-            {/*        name={'firstName'}*/}
-            {/*        value={values.firstName}*/}
-            {/*        onChange={handleChange}*/}
-            {/*    />*/}
-            {/*    <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.firstName}</small>*/}
-            {/*</div>*/}
-            {/*<div className={'flex flex-col'}>*/}
-            {/*    <label htmlFor={'lastName'}>Last name</label>*/}
-            {/*    <input*/}
-            {/*        className={'bg-white rounded-md  text-black px-1'}*/}
-            {/*        type={'lastName'}*/}
-            {/*        id={'lastName'}*/}
-            {/*        name={'lastName'}*/}
-            {/*        value={values.lastName}*/}
-            {/*        onChange={handleChange}*/}
-            {/*    />*/}
-            {/*    <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.lastName}</small>*/}
-            {/*</div>*/}
+        <form className={'flex flex-col items-center gap-3'} action={action}>
             <div className={'flex flex-col'}>
                 <label htmlFor={'email'}>Email</label>
                 <input
@@ -65,10 +27,10 @@ const SignUpForm = () => {
                     type={'email'}
                     id={'email'}
                     name={'email'}
-                    value={values.email}
+                    value={formData.email}
                     onChange={handleChange}
                 />
-                <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.email}</small>
+                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.message.email}</small>
             </div>
             <div className={'flex flex-col'}>
                 <label htmlFor={'password'}>Password</label>
@@ -77,10 +39,10 @@ const SignUpForm = () => {
                     type={'password'}
                     id={'password'}
                     name={'password'}
-                    value={values.password}
+                    value={formData.password}
                     onChange={handleChange}
                 />
-                <small className={'text-red-700 font-bold text-xs mt-1'}>{errors.password}</small>
+                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.message.password}</small>
 
             </div>
 
