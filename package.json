@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
+    "clsx": "^2.1.1",
     "cookie-universal": "^2.2.2",
     "formik": "^2.4.6",
     "js-cookie": "^3.0.5",

@@ -1,14 +1,11 @@
 'use client';
-
-import {regUser} from "@/app/(pages)/auth/actions";
+import {logUser} from "@/app/auth/actions";
 import React, {useActionState, useState} from "react";
+import clsx from "clsx";
+import {initialValues} from "@/components/forms/auth/SignUp.form";
 
-export const initialValues = {
-    email: '',
-    password: '',
-}
 
-const SignUpForm = () => {
+const SignInForm = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
@@ -16,7 +13,7 @@ const SignUpForm = () => {
     }
 
     const [formData, setFormData] = useState(initialValues)
-    const [state, action, pending] = useActionState(regUser, null)
+    const [state, action, pending] = useActionState(logUser, null)
 
     return (
         <form className={'flex flex-col items-center gap-3'} action={action}>
@@ -30,7 +27,7 @@ const SignUpForm = () => {
                     value={formData.email}
                     onChange={handleChange}
                 />
-                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.message.email}</small>
+                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.email}</small>
             </div>
             <div className={'flex flex-col'}>
                 <label htmlFor={'password'}>Password</label>
@@ -42,15 +39,16 @@ const SignUpForm = () => {
                     value={formData.password}
                     onChange={handleChange}
                 />
-                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.message.password}</small>
+                <small className={'text-red-700 font-bold text-xs mt-1'}>{state?.password}</small>
 
             </div>
 
-            <button type={'submit'} className={'bg-blue-100 text-black w-[200px] rounded-md mt-2'}>
+            <button type={'submit'}
+                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[200px] rounded-md mt-2')}>
                 Submit
             </button>
         </form>
     )
 }
 
-export default SignUpForm;
+export default SignInForm;
