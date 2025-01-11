@@ -1,14 +1,8 @@
-import {NextRequest, NextResponse} from 'next/server';
+import {NextRequest} from 'next/server';
+import {updateSession} from "@/lib/sessions";
 
-export default function middleware(request: NextRequest) {
-    // const token = Cookies.get('authorized');
-    // console.log('Token:', token); // Debugging: Print token to console
-    //
-    // if (!token) {
-    //     return NextResponse.redirect(new URL('/auth', request.url));
-    // }
-
-    return NextResponse.next();
+export async function middleware(request: NextRequest) {
+    return await updateSession(request)
 }
 
 export const config = {
