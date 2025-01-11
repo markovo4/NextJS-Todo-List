@@ -2,25 +2,15 @@
 
 import {z} from "zod";
 import {redirect} from "next/navigation";
-
-// Validation schema for incoming data
-const schemaSignUp = z.object({
-    email: z.string().email("Invalid email format").nonempty("Email is required"),
-    password: z.string().nonempty("Password is required").min(6, "Password must be at least 6 characters"),
-    name: z.string().nonempty("Password is required").min(6, "Name must be at least 6 characters")
-});
-
-const schema = z.object({
-    email: z.string().email("Invalid email format").nonempty("Email is required"),
-    password: z.string().nonempty("Password is required").min(6, "Password must be at least 6 characters"),
-});
+import {signInValidationSchema} from "@/components/forms/validationSchemas/signIn.validationSchema";
+import {signUpValidationSchema} from "@/components/forms/validationSchemas/signUp.validationSchema";
 
 export async function regUser(_prevState: unknown, data: FormData) {
     try {
         // Extract and validate data from FormData
         const {email, password, name} = Object.fromEntries(data.entries()) as Record<string, string>;
 
-        const validatedData = schemaSignUp.parse({email, password, name});
+        const validatedData = signUpValidationSchema.parse({email, password, name});
 
         // Send data to the server
         const response = await fetch("http://localhost:3000/api/auth/signUp", {
@@ -35,11 +25,9 @@ export async function regUser(_prevState: unknown, data: FormData) {
         if (!response.ok) {
             const errorData = await response.json();
             return {
-                message: {
-                    email: errorData.message.email || "An error occurred with the email",
-                    password: errorData.message.password || "An error occurred with the password",
-                    name: errorData.message.name || "An error occurred with the name"
-                },
+                email: errorData.message.email || "An error occurred with the email",
+                password: errorData.message.password || "An error occurred with the password",
+                name: errorData.message.name || "An error occurred with the name"
             };
         }
     } catch (e) {
@@ -70,7 +58,7 @@ export async function logUser(_prevState: unknown, data: FormData) {
         // Extract and validate data from FormData
         const {email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
 
-        const validatedData = schema.parse({email, password});
+        const validatedData = signInValidationSchema.parse({email, password});
 
         // Send data to the server
         const response = await fetch("http://localhost:3000/api/auth/signIn", {
