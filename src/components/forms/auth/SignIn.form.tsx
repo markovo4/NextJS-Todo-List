@@ -1,11 +1,13 @@
 'use client';
 import {logUser} from "@/app/auth/actions";
-import React, {useActionState, useState} from "react";
+import React, {useActionState, useEffect, useState} from "react";
 import clsx from "clsx";
 import {initialValues} from "@/components/forms/auth/SignUp.form";
+import {toast} from "react-toastify";
 
 
 const SignInForm = () => {
+    const notify = () => toast(`${state?.toast}`, {type: state?.toastStatus});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
@@ -14,6 +16,12 @@ const SignInForm = () => {
 
     const [formData, setFormData] = useState(initialValues)
     const [state, action, pending] = useActionState(logUser, null)
+
+    useEffect(() => {
+        if (!pending && state?.toast) {
+            notify();
+        }
+    }, [pending, state]);
 
     return (
         <form className={'flex flex-col items-center gap-3'} action={action}>
@@ -44,7 +52,9 @@ const SignInForm = () => {
             </div>
 
             <button type={'submit'}
-                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[200px] rounded-md mt-2')}>
+                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[200px] rounded-md mt-2')}
+                    disabled={pending}
+            >
                 Submit
             </button>
         </form>

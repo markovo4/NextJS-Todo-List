@@ -1,6 +1,5 @@
 import {prisma} from "@/lib/prisma";
 import {createHash} from "node:crypto";
-import {NextResponse} from "next/server";
 
 export async function POST(request: Request) {
     const body = await request.json();
@@ -13,14 +12,11 @@ export async function POST(request: Request) {
 
     if (!result) {
         return Response.json({
-                email: 'No Such email exists',
-                password: 'No Such password exists'
-
+                message: 'Wrong email or password!',
+                toastStatus: 'error'
             },
             {status: 404})
     }
 
-    NextResponse.redirect(new URL('/todoList', request.url))
-
-    return Response.json(user, {status: 201})
+    return Response.json(user, {status: 200})
 }

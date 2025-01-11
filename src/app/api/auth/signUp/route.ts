@@ -8,7 +8,17 @@ export async function POST(request: Request) {
     const hash = createHash('sha256').update(password).digest('hex')
 
     const user = {email, password: hash, name}
-    console.log(hash)
+
+    const exists = await prisma.user.findFirst({
+        where: {...user}
+    });
+
+    if (exists) {
+        return Response.json({
+            message: 'User with such email already exists!',
+            toastStatus: 'error'
+        }, {status: 400})
+    }
 
     const result = await prisma.user.create({
         data: {...user}
@@ -16,13 +26,11 @@ export async function POST(request: Request) {
 
     if (!result) {
         return Response.json({
-            message: {
-                email: 'Error Occurred with Email:)',
-                password: 'Error Occurred with Password:)'
-            }
+            message: 'Error occurred!',
+            toastStatus: 'error'
         }, {status: 400})
     }
 
+    return Response.json(user, {status: 201})
 
-    return Response.json(user, {status: 200})
 }

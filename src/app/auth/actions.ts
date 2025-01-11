@@ -26,7 +26,9 @@ export async function regUser(_prevState: unknown, data: FormData) {
             return {
                 email: errorData.message.email || "An error occurred with the email",
                 password: errorData.message.password || "An error occurred with the password",
-                name: errorData.message.name || "An error occurred with the name"
+                name: errorData.message.name || "An error occurred with the name",
+                toast: errorData.message || null,
+                toastStatus: errorData.toastStatus || 'info'
             };
         }
     } catch (e) {
@@ -37,6 +39,8 @@ export async function regUser(_prevState: unknown, data: FormData) {
                 email: errors.email?.[0] || undefined,
                 password: errors.password?.[0] || undefined,
                 name: errors.name?.[0] || undefined,
+                toast: 'Bad Attempt',
+                toastStatus: 'info'
             };
         }
 
@@ -46,6 +50,8 @@ export async function regUser(_prevState: unknown, data: FormData) {
             email: "Unexpected error occurred during registration",
             password: "Unexpected error occurred during registration",
             name: "Unexpected error occurred during registration",
+            toast: 'Server Error',
+            toastStatus: 'error'
         };
     }
 
@@ -73,6 +79,8 @@ export async function logUser(_prevState: unknown, data: FormData) {
             return {
                 email: errorData.email || "An error occurred with the email",
                 password: errorData.password || "An error occurred with the password",
+                toast: errorData.message || null,
+                toastStatus: errorData.toastStatus || 'info'
             };
         }
     } catch (e) {
@@ -82,6 +90,8 @@ export async function logUser(_prevState: unknown, data: FormData) {
             return {
                 email: errors.email?.[0] || 'undefined',
                 password: errors.password?.[0] || 'undefined',
+                toast: 'Bad Attempt',
+                toastStatus: 'info'
             };
         }
 
@@ -89,6 +99,8 @@ export async function logUser(_prevState: unknown, data: FormData) {
         return {
             email: "Unexpected error occurred during registration",
             password: "Unexpected error occurred during registration",
+            toast: 'Server Error',
+            toastStatus: 'error'
         };
     }
     await login({email, password})
