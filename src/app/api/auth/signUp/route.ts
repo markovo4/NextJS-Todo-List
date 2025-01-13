@@ -10,14 +10,15 @@ export async function POST(request: Request) {
     const user = {email, password: hash, name}
 
     const exists = await prisma.user.findFirst({
-        where: {...user}
+        where: {email}
     });
+
 
     if (exists) {
         return Response.json({
             message: 'User with such email already exists!',
             toastStatus: 'error'
-        }, {status: 400})
+        }, {status: 409})
     }
 
     const result = await prisma.user.create({
