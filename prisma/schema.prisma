@@ -19,6 +19,7 @@ model Todo {
   id          String  @id @default(cuid())
   title       String
   description String
+  completed   Boolean
   userId      String?
   User        User?   @relation(fields: [userId], references: [id])
 }

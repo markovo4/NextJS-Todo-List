@@ -7,9 +7,9 @@ import {getSession, login} from "@/lib/sessions";
 import {Api} from "@/app/api/api";
 
 export const regUser = async (_prevState: unknown, data: FormData) => {
-    const {email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
+    const {name, email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
     try {
-        const validatedData = signUpValidationSchema.parse({email, password});
+        const validatedData = signUpValidationSchema.parse({name, email, password});
         const response = await Api.post("/api/auth/signUp", validatedData);
         if (response.status === 201) {
             return {
@@ -21,6 +21,7 @@ export const regUser = async (_prevState: unknown, data: FormData) => {
     } catch (e: unknown) {
         if (e instanceof z.ZodError) {
             const errors = e.flatten().fieldErrors;
+            console.log(errors)
             return {
                 email: errors.email?.[0] || undefined,
                 password: errors.password?.[0] || undefined,

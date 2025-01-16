@@ -4,7 +4,7 @@ export const POST = async (request: Request) => {
     const body = await request.json();
     const {userId, title, description} = body;
 
-    const todo = {userId, title, description}
+    const todo = {userId, title, description, completed: false}
 
     const result = await prisma.todo.create({
         data: {...todo}
