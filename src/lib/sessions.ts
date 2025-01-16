@@ -7,9 +7,10 @@ export interface SessionData {
     name?: string;
     email?: string;
     password?: string;
+    userId?: string;
 }
 
-const key = new TextEncoder().encode(process.env.JWT_SECRET);
+const key = new TextEncoder().encode('process.env.JWT_SECRET');
 
 export const encrypt = async (payload: JWTPayload | undefined) => {
     return await new SignJWT(payload)
@@ -25,7 +26,7 @@ export const decrypt = async (input: string) => {
 }
 
 export const login = async (data: SessionData) => {
-    const user = {email: data.email || '', password: data.password}
+    const user = {email: data.email || '', password: data.password, userId: data.userId}
 
     const expires = new Date(Date.now() + 10 * 24 * 60 * 1000);
     const session = await encrypt({user, expires});

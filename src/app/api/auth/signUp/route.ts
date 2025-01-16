@@ -7,8 +7,6 @@ export async function POST(request: Request) {
 
     const hash = createHash('sha256').update(password).digest('hex')
 
-    const user = {email, password: hash, name}
-
     const exists = await prisma.user.findFirst({
         where: {email}
     });
@@ -21,17 +19,22 @@ export async function POST(request: Request) {
         }, {status: 409})
     }
 
-    const result = await prisma.user.create({
-        data: {...user}
+    const user = await prisma.user.create({
+        data: {email, password: hash, name}
     });
 
-    if (!result) {
+    if (!user) {
         return Response.json({
             message: 'Error occurred!',
             toastStatus: 'error'
         }, {status: 400})
     }
 
-    return Response.json(user, {status: 201})
+    const userId = user.id;
+
+    return new Response(JSON.stringify({userId}), {
+        status: 201,
+        headers: {"Content-Type": "application/json"},
+    });
 
 }

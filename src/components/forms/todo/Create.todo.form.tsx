@@ -1,7 +1,9 @@
 'use client'
 
 import {InputComponent} from "@/components/forms/helpers/Input.component";
-import {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import {ChangeEvent, useActionState, useEffect, useState} from "react";
+import {createTodo} from "@/app/auth/actions";
+import {toast} from "react-toastify";
 
 const initialValues = {
     title: '',
@@ -9,24 +11,27 @@ const initialValues = {
     completed: false,
 }
 
-export const CreateTodoForm = () => {
+const CreateTodoForm = () => {
+    const notify = () => toast(`${state?.toast}`, {type: state?.toastStatus});
+
     const [formData, setFormData] = useState(initialValues);
+
+    const [state, action, pending] = useActionState(createTodo, null)
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         setFormData({...formData, [name]: value});
     }
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        console.log(formData);
-    }
 
     useEffect(() => {
+        if (!pending && state?.toast) {
+            notify();
+        }
+    }, [pending, state]);
 
-    })
 
     return (
-        <form className={'flex flex-col items-center gap-3'} onSubmit={handleSubmit}>
+        <form className={'flex flex-col items-center gap-3'} action={action}>
             <InputComponent
                 value={formData.title}
                 onChange={handleChange}
@@ -51,3 +56,5 @@ export const CreateTodoForm = () => {
     )
 
 }
+
+export default CreateTodoForm;

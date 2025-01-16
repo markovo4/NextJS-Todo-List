@@ -1,4 +1,4 @@
-import {CreateTodoForm} from "@/components/forms/todo/Create.todo.form";
+import CreateTodoForm from "@/components/forms/todo/Create.todo.form";
 
 const Todolist = () => {
     return (
