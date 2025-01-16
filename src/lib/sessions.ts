@@ -9,13 +9,13 @@ export interface SessionData {
     password?: string;
 }
 
-const key = new TextEncoder().encode(process.env.SECRET_KEY);
+const key = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export const encrypt = async (payload: JWTPayload | undefined) => {
     return await new SignJWT(payload)
         .setProtectedHeader({alg: 'HS256'})
         .setIssuedAt()
-        .setExpirationTime('20 sec from now')
+        .setExpirationTime('2 hours from now')
         .sign(key)
 }
 
@@ -25,9 +25,9 @@ export const decrypt = async (input: string) => {
 }
 
 export const login = async (data: SessionData) => {
-    const user = {email: data.email, name: data.name || '', password: data.password}
+    const user = {email: data.email || '', password: data.password}
 
-    const expires = new Date(Date.now() + 10 * 1000);
+    const expires = new Date(Date.now() + 10 * 24 * 60 * 1000);
     const session = await encrypt({user, expires});
 
     const cookiesStore = await cookies();
@@ -51,7 +51,7 @@ export const updateSession = async (request: NextRequest) => {
     if (!session) return NextResponse.redirect(new URL('/auth', request.url));
 
     const parsed = await decrypt(session);
-    parsed.expires = new Date(Date.now() + 10 * 1000);
+    parsed.expires = new Date(Date.now() + 10 * 24 * 60 * 1000);
 
     const response = NextResponse.next();
     response.cookies.set({

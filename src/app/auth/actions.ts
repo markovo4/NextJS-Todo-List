@@ -1,7 +1,6 @@
 "use server";
 
 import {z} from "zod";
-import {redirect} from "next/navigation";
 import {signInValidationSchema} from "@/components/forms/validationSchemas/signIn.validationSchema";
 import {signUpValidationSchema} from "@/components/forms/validationSchemas/signUp.validationSchema";
 import {login} from "@/lib/sessions";
@@ -13,8 +12,11 @@ export async function regUser(_prevState: unknown, data: FormData) {
         const validatedData = signUpValidationSchema.parse({email, password, name});
         const response = await Api.post("/api/auth/signUp", validatedData);
         if (response.status === 201) {
-            redirect('/auth/signIn')
-
+            return {
+                toast: 'Registered Successfully',
+                toastStatus: 'success',
+                redirect: '/auth/signIn'
+            }
         }
     } catch (e: unknown) {
         if (e instanceof z.ZodError) {
@@ -24,7 +26,8 @@ export async function regUser(_prevState: unknown, data: FormData) {
                 password: errors.password?.[0] || undefined,
                 name: errors.name?.[0] || undefined,
                 toast: 'Bad Attempt',
-                toastStatus: 'info'
+                toastStatus: 'info',
+                redirect: null
             };
         }
         return {
@@ -32,7 +35,8 @@ export async function regUser(_prevState: unknown, data: FormData) {
             password: "Unexpected error",
             name: "Unexpected error",
             toast: e.message || "Registration failed",
-            toastStatus: e.toastStatus || 'error'
+            toastStatus: e.toastStatus || 'error',
+            redirect: null
         };
     }
 }
@@ -44,9 +48,12 @@ export async function logUser(_prevState: unknown, data: FormData) {
         const response = await Api.post("/api/auth/signIn", validatedData);
 
         if (response.status === 200) {
+            await login({email, password})
+
             return {
                 toast: 'Successful Log in',
-                toastStatus: 'success'
+                toastStatus: 'success',
+                redirect: '/todoList'
             };
         }
     } catch (e: unknown) {
@@ -56,7 +63,8 @@ export async function logUser(_prevState: unknown, data: FormData) {
                 email: errors.email?.[0] || 'undefined',
                 password: errors.password?.[0] || 'undefined',
                 toast: 'Bad Attempt',
-                toastStatus: 'info'
+                toastStatus: 'info',
+                redirect: null
             };
         }
 
@@ -64,9 +72,8 @@ export async function logUser(_prevState: unknown, data: FormData) {
             email: "Unexpected error",
             password: "Unexpected error",
             toast: e.message || 'Server Error',
-            toastStatus: e.status || 'error'
+            toastStatus: e.toastStatus || 'error',
+            redirect: null
         };
     }
-    await login({email, password})
-    redirect('/todoList')
 }
