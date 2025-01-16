@@ -1,5 +1,5 @@
 'use client';
-import {logUser} from "@/app/auth/actions";
+import {logUser} from "@/app/api/actions";
 import React, {useActionState, useEffect, useState} from "react";
 import clsx from "clsx";
 import {initialValues} from "@/components/forms/auth/SignUp.form";

@@ -1,6 +1,6 @@
 'use client';
 
-import {regUser} from "@/app/auth/actions";
+import {regUser} from "@/app/api/actions";
 import React, {useActionState, useEffect, useState} from "react";
 import clsx from "clsx";
 import {toast} from "react-toastify";

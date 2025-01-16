@@ -2,7 +2,7 @@
 
 import {InputComponent} from "@/components/forms/helpers/Input.component";
 import {ChangeEvent, useActionState, useEffect, useState} from "react";
-import {createTodo} from "@/app/auth/actions";
+import {createTodo} from "@/app/api/actions";
 import {toast} from "react-toastify";
 
 const initialValues = {
