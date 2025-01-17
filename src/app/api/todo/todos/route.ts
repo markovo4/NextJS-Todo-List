@@ -1,9 +1,10 @@
 export const POST = async (request: Request) => {
     try {
         const body = await request.json();
-        const {userId} = body;
+        const {session} = body;
+        const {user} = session;
         const listOfTodos = await prisma?.todo.findMany({
-            where: {userId}
+            where: {userId: user.userId}
         });
 
         if (!listOfTodos) {
