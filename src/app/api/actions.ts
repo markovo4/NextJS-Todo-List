@@ -5,12 +5,13 @@ import {signInValidationSchema} from "@/components/forms/validationSchemas/signI
 import {signUpValidationSchema} from "@/components/forms/validationSchemas/signUp.validationSchema";
 import {getSession, login} from "@/lib/sessions";
 import {Api} from "@/app/api/api";
+import {authApi} from "@/app/api/authApi";
 
 export const regUser = async (_prevState: unknown, data: FormData) => {
     const {name, email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
     try {
         const validatedData = signUpValidationSchema.parse({name, email, password});
-        const response = await Api.post("/api/auth/signUp", validatedData);
+        const response = await authApi.post("/api/auth/signUp", validatedData);
         if (response.status === 201) {
             return {
                 toast: 'Registered Successfully',
@@ -46,10 +47,9 @@ export const logUser = async (_prevState: unknown, data: FormData) => {
     const {email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
     try {
         const validatedData = signInValidationSchema.parse({email, password});
-        const response = await Api.post("/api/auth/signIn", validatedData);
+        const response = await authApi.post("/api/auth/signIn", validatedData);
         if (response.status === 200) {
             await login({email, password, userId: response.data.userId})
-
             return {
                 toast: 'Successful Log in',
                 toastStatus: 'success',

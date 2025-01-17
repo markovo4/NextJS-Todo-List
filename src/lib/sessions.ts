@@ -30,8 +30,8 @@ export const login = async (data: SessionData) => {
 
     const expires = new Date(Date.now() + 10 * 24 * 60 * 1000);
     const session = await encrypt({user, expires});
-
     const cookiesStore = await cookies();
+    
     cookiesStore.set('session', session, {expires, httpOnly: true})
 }
 
