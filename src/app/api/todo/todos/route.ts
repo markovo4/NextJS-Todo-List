@@ -1,6 +1,10 @@
-export const GET = async () => {
+export const POST = async (request: Request) => {
     try {
-        const listOfTodos = await prisma?.todo.findMany();
+        const body = await request.json();
+        const {userId} = body;
+        const listOfTodos = await prisma?.todo.findMany({
+            where: {userId}
+        });
 
         if (!listOfTodos) {
             return Response.json({

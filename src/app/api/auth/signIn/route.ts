@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const user = await prisma.user.findFirst({
         where: {email, password: hash}
     })
-    
+
     if (!user) {
         return Response.json({
                 message: 'Wrong email or password!',
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
     const userId = user.id;
 
-    return new Response(JSON.stringify({userId}), {
+    return Response.json(JSON.stringify({userId}), {
         status: 200,
         headers: {"Content-Type": "application/json"},
     })

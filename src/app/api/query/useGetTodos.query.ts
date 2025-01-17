@@ -1,18 +1,17 @@
 import {Api} from "@/app/api/api";
-import {useQuery} from "@tanstack/react-query";
+import {getSession} from "@/lib/sessions";
 
-export const useGetTodosQuery = () => {
+export const useGetTodosQuery = async () => {
+    const session = await getSession();
 
-    return useQuery<void, Error, TSingleTodo[]>({
-        enabled: true,
-        queryFn: () => Api.get('/api/todo/todos').then((res) => res.data),
-        queryKey: ['todos'],
-    });
+    const response = await Api.post(`/api/todo/todos`, {userId: session?.user.userId});
+    return response.data;
+
 }
 
 export type TSingleTodo = {
     id: string;
-    userId: string;
+    userId: string; s
     title: string;
     description: string;
     completed: boolean;
