@@ -1,11 +1,16 @@
+'use client'
+
 import CreateTodoForm from "@/components/forms/todo/Create.todo.form";
 import {getTodosQuery} from "@/app/api/query/useGetTodos.query";
+import {Api} from "@/app/api/api";
 
 const Todolist = async () => {
     try {
-        // Fetch todos
         const data: TSingleTodo[] = await getTodosQuery();
 
+        const handleClick = async (todoId) => {
+            await Api.delete('/api/todo/delete', {todoId})
+        }
         return (
             <div>
                 <h1>TodoList Page</h1>
@@ -20,6 +25,9 @@ const Todolist = async () => {
                                 <h3>{todo.title}</h3>
                                 <p>{todo.description}</p>
                                 <p>{`Status: ${todo.completed ? "Completed" : "Pending"}`}</p>
+                                <button className={'bg-red-800 px-2 py-1 rounded-2xl text-sm'}
+                                        onClick={() => handleClick(todo.id)}>DELETE TODO
+                                </button>
                             </div>
                         ))
                     ) : (
