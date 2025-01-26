@@ -3,7 +3,7 @@
 import {regUser} from "@/app/api/actions";
 import React, {useActionState, useEffect, useState} from "react";
 import clsx from "clsx";
-import {toast} from "react-toastify";
+import {toast, TypeOptions} from "react-toastify";
 import {useRouter} from "next/navigation";
 import {InputComponent} from "@/components/forms/helpers/Input.component";
 
@@ -14,7 +14,7 @@ export const initialValues = {
 };
 
 const SignUpForm = () => {
-    const notify = () => toast(`${state?.toast}`, {type: state?.toastStatus});
+    const notify = () => toast(`${state?.toast}`, {type: state?.toastStatus as TypeOptions});
     const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +35,7 @@ const SignUpForm = () => {
         }
     }, [pending, state]);
 
+    console.log(state)
 
     return (
         <form className={'flex flex-col items-center gap-3'} action={action}>
@@ -44,7 +45,9 @@ const SignUpForm = () => {
                 name={'email'}
                 value={formData.email}
                 onChange={handleChange}
-                label={"email"}/>
+                label={"email"}
+                errorMessage={state?.email}
+            />
 
             <InputComponent
                 type={'password'}
@@ -52,7 +55,9 @@ const SignUpForm = () => {
                 name={'password'}
                 value={formData.password}
                 onChange={handleChange}
-                label={"password"}/>
+                label={"password"}
+                errorMessage={state?.password}
+            />
 
             <InputComponent
                 type={'text'}
@@ -60,7 +65,9 @@ const SignUpForm = () => {
                 name={'name'}
                 value={formData.name}
                 onChange={handleChange}
-                label={"name"}/>
+                label={"name"}
+                errorMessage={state?.name}
+            />
 
             <button
                 type={'submit'}

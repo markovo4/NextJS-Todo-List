@@ -1,6 +1,7 @@
 import {prisma} from "@/lib/prisma";
+import {NextResponse} from "next/server";
 
-export const DELETE = async (request: Request) => {
+export const POST = async (request: Request) => {
     const body = await request.json();
     const {todoId} = body;
 
@@ -15,6 +16,11 @@ export const DELETE = async (request: Request) => {
                 toastStatus: 'error'
             }, {status: 400})
         }
+
+        return NextResponse.json({
+            message: `Successful Todo deletion ${todoToRemove.title}`,
+            toastStatus: 'success'
+        }, {status: 202})
 
     } catch (error) {
         console.error(error)

@@ -1,50 +1,61 @@
 'use client'
-
 import CreateTodoForm from "@/components/forms/todo/Create.todo.form";
+import {useEffect, useState} from "react";
+import Api from "@/lib/api";
+import {toast} from "react-toastify";
 import {getTodosQuery} from "@/app/api/query/useGetTodos.query";
-import {Api} from "@/app/api/api";
 
-const Todolist = async () => {
-    try {
-        const data: TSingleTodo[] = await getTodosQuery();
+const Todolist = () => {
+    const [todos, setTodos] = useState<TSingleTodo[]>([]);
+    console.log(todos)
 
-        const handleClick = async (todoId) => {
-            await Api.delete('/api/todo/delete', {todoId})
+    const handleDelete = async (todoId: string) => {
+        try {
+            await Api.post("/api/todo/delete", {todoId});
+            toast("Todo deleted", {type: "success"});
+
+            setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
+        } catch (error) {
+            toast("Failed to delete todo", {type: "error"});
         }
-        return (
+    };
+
+    useEffect(() => {
+        async function fetchTodos() {
+            const data = await getTodosQuery();
+            setTodos(data);
+        }
+
+        fetchTodos();
+    }, []);
+
+
+    return (
+        <div>
+            <h1>TodoList Page</h1>
             <div>
-                <h1>TodoList Page</h1>
-                <div>
-                    <CreateTodoForm/>
-                </div>
-                <div>
-                    {/* Render the list of todos */}
-                    {data?.length > 0 ? (
-                        data.map((todo) => (
-                            <div key={todo.id} style={{border: "1px solid #ccc", padding: "10px", margin: "10px 0"}}>
-                                <h3>{todo.title}</h3>
-                                <p>{todo.description}</p>
-                                <p>{`Status: ${todo.completed ? "Completed" : "Pending"}`}</p>
-                                <button className={'bg-red-800 px-2 py-1 rounded-2xl text-sm'}
-                                        onClick={() => handleClick(todo.id)}>DELETE TODO
-                                </button>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No todos available. Please add one!</p>
-                    )}
-                </div>
+                <CreateTodoForm/>
             </div>
-        );
-    } catch (error) {
-        console.error("Error fetching todos:", error);
-        return (
             <div>
-                <h1>TodoList Page</h1>
-                <p>Failed to load todos. Please try again later.</p>
+                {/* Render the list of todos */}
+                {todos?.length > 0 ? (
+                    todos.map((todo) => (
+                        <div key={todo.id} style={{border: "1px solid #ccc", padding: "10px", margin: "10px 0"}}>
+                            <h3>{todo.title}</h3>
+                            <p>{todo.description}</p>
+                            <p>{`Status: ${todo.completed ? "Completed" : "Pending"}`}</p>
+                            <button className={'bg-red-800 px-2 py-1 rounded-2xl text-sm'}
+                                    onClick={() => handleDelete(todo.id)}>
+                                Delete Todo
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <p>No todos available. Please add one!</p>
+                )}
             </div>
-        );
-    }
+        </div>
+    );
 };
 
 export default Todolist;

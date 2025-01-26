@@ -1,10 +1,7 @@
-import {Api} from "@/app/api/api";
-import {getSession} from "@/lib/sessions";
-import {JWTPayload} from "jose";
+import Api from "@/lib/api";
 
 export const getTodosQuery = async () => {
-    const session: null | JWTPayload = await getSession();
-    const response = await Api.post(`/api/todo/todos`, {session});
+    const response = await Api.get(`/api/todo/todos`);
     return response.data;
 
 }
