@@ -1,7 +1,7 @@
 "use client";
 
 import {InputComponent} from "@/components/forms/helpers/Input.component";
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useActionState, useEffect, useState} from "react";
 import {updateTodo} from "@/app/api/actions"; // ✅ Correct action for updating
 import {toast} from "react-toastify";
 import Api from "@/lib/api";
@@ -15,23 +15,20 @@ const initialValues = {
 
 const EditTodoForm = () => {
     const pathname = usePathname();
-    const todoId = pathname.split("/").at(-1); // ✅ Correct way to get `todoId`
+    const todoId = pathname.split("/").at(-1);
 
-    const [currentTodo, setCurrentTodo] = useState<TSingleTodo | null>(null);
     const [formData, setFormData] = useState(initialValues);
     const [loading, setLoading] = useState(true);
-    const [updating, setUpdating] = useState(false);
 
-    // 🔹 Fetch Todo When Component Mounts
+    const [state, action, pending] = useActionState(updateTodo, null)
+
     useEffect(() => {
         async function fetchTodo() {
             try {
                 if (!todoId) return;
 
-                const response = await Api.get(`/api/todo/todos/${todoId}`);
-                setCurrentTodo(response.data);
+                const response = await Api.get(`/api/todo/todo?todo=${todoId}`);
 
-                // ✅ Set form data with the fetched todo
                 setFormData({
                     title: response.data.title || "",
                     description: response.data.description || "",
@@ -49,31 +46,11 @@ const EditTodoForm = () => {
         fetchTodo();
     }, [todoId]);
 
-    // 🔹 Handle Input Changes
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         setFormData({...formData, [name]: value});
     };
 
-    // 🔹 Handle Form Submission (Update Todo)
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!todoId) return;
-
-        setUpdating(true);
-
-        try {
-            await updateTodo(todoId, formData);
-            toast("Todo updated successfully", {type: "success"});
-        } catch (error) {
-            toast("Failed to update todo", {type: "error"});
-            console.error(error);
-        } finally {
-            setUpdating(false);
-        }
-    };
-
-    // 🔹 Show Loading State Until Data is Fetched
     if (loading) {
         return <p className="text-center text-lg font-bold">Loading...</p>;
     }
@@ -83,7 +60,7 @@ const EditTodoForm = () => {
             <h1 className="text-center text-3xl font-bold">Edit Todo</h1>
             <form
                 className="flex flex-col items-center gap-3"
-                onSubmit={handleSubmit}
+                action={action}
             >
                 <InputComponent
                     value={formData.title}
@@ -92,6 +69,7 @@ const EditTodoForm = () => {
                     id="title"
                     type="text"
                     name="title"
+                    errorMessage={state?.title}
                 />
 
                 <InputComponent
@@ -101,6 +79,7 @@ const EditTodoForm = () => {
                     id="description"
                     type="text"
                     name="description"
+                    errorMessage={state?.description}
                 />
 
                 <div className="flex items-center gap-2">
@@ -120,9 +99,9 @@ const EditTodoForm = () => {
                 <button
                     type="submit"
                     className="bg-blue-800 w-full rounded-md text-white py-2"
-                    disabled={updating}
+                    disabled={pending}
                 >
-                    {updating ? "Updating..." : "Submit"}
+                    {pending ? "Updating..." : "Submit"}
                 </button>
             </form>
         </div>
@@ -131,7 +110,6 @@ const EditTodoForm = () => {
 
 export default EditTodoForm;
 
-// 🔹 Define the Todo Type
 export type TSingleTodo = {
     id: string;
     userId: string;

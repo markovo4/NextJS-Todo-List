@@ -4,32 +4,22 @@ import {prisma} from "@/lib/prisma";
 
 export const GET = async (req: NextRequest) => {
     try {
-        // ✅ Correct way to get session token
         const token = req.cookies.get("session")?.value || getCookie("session", {req});
 
         if (!token) {
             return NextResponse.json({message: "Unauthorized"}, {status: 401});
         }
-
-        // ✅ Extract `todoId` from query parameters
-        const todoId = req.nextUrl.searchParams.get("todoId");
+        const todoId = req.nextUrl.searchParams.get('todo');
 
         if (!todoId) {
             return NextResponse.json({message: "Missing todoId in query"}, {status: 400});
         }
-
-        // ✅ Ensure `todoId` is a number (if `id` is an integer in the DB)
-        const parsedTodoId = isNaN(Number(todoId)) ? todoId : Number(todoId);
-
-        // ✅ Fetch a specific todo from the database
         const todo = await prisma.todo.findUnique({
-            where: {id: parsedTodoId}, // ✅ Correct field name (assuming `id` is the correct column)
+            where: {id: todoId},
         });
-
         if (!todo) {
             return NextResponse.json({message: "Todo not found!"}, {status: 404});
         }
-
         return NextResponse.json(todo, {status: 200});
     } catch (error) {
         console.error("Error fetching todo:", error);

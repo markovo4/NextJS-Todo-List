@@ -70,12 +70,12 @@ const Todolist = () => {
 
                             <div className='flex items-center gap-3'>
                                 <label>Is completed?</label>
-                                <input
-                                    className='bg-white w-3 h-3'
-                                    type="checkbox"
-                                    checked={todo.completed}
-                                    onChange={() => handleCheckboxToggle(todo.id, !todo.completed)}
-                                />
+                                {/*<input*/}
+                                {/*    className='bg-white w-3 h-3'*/}
+                                {/*    type="checkbox"*/}
+                                {/*    checked={todo.completed}*/}
+                                {/*    onChange={() => handleCheckboxToggle(todo.id, !todo.completed)}*/}
+                                {/*/>*/}
                             </div>
                             <div className='flex items-center gap-5 text-amber-50 font-bold'>
                                 <Link href={`/todoList/${todo.id}`}>

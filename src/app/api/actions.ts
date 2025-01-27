@@ -143,10 +143,10 @@ export const createTodo = async (_prevState: unknown, data: FormData) => {
 }
 
 export const updateTodo = async (_prevState: unknown, data: FormData) => {
-    const {title, description, checked} = Object.fromEntries(data.entries()) as Record<string, string>;
-
+    const {title, description} = Object.fromEntries(data.entries()) as Record<string, string>;
+    const todoId = window.location.pathname.split('/').at(-1);
     try {
-        const response = await Api.post('/api/todo/edit', {title, description, checked})
+        const response = await Api.put('/api/todo/edit', {todoId, title, description, completed: false})
 
         if (response.status === 201) {
             return {
@@ -159,16 +159,16 @@ export const updateTodo = async (_prevState: unknown, data: FormData) => {
         if (e instanceof z.ZodError) {
             const errors = e.flatten().fieldErrors;
             return {
-                email: errors.email?.[0] || 'undefined',
-                password: errors.password?.[0] || 'undefined',
+                title: errors.title?.[0] || 'undefined',
+                description: errors.description?.[0] || 'undefined',
                 toast: 'Bad Attempt',
                 toastStatus: 'info',
             };
         }
 
         return {
-            email: "Unexpected error",
-            password: "Unexpected error",
+            title: "Unexpected error",
+            description: "Unexpected error",
             toast: e.message || 'Server Error',
             toastStatus: e.toastStatus || 'error',
         };

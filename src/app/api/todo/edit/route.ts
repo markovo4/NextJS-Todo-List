@@ -1,23 +1,38 @@
 import {prisma} from "@/lib/prisma";
 
 export const PUT = async (request: Request) => {
-    const body = await request.json();
-    const {todoId, title, description, checked} = body;
-
     try {
+        const body = await request.json();
+        const {todoId, title, description, completed} = body;
+        console.log(1)
+        if (!todoId || typeof title !== "string" || typeof description !== "string" || typeof completed !== "boolean") {
+            return new Response(JSON.stringify({
+                message: "Invalid input parameters",
+                toastStatus: "error"
+            }), {status: 400});
+        }
+        console.log(2)
         const updatedTodo = await prisma.todo.update({
             where: {id: todoId},
-            data: {title, description, checked},
+            data: {title, description, completed}
         });
 
-        if (!updatedTodo) {
-            return Response.json({
-                message: 'Failed to update Todo!',
-                toastStatus: 'error'
-            }, {status: 400})
-        }
-    } catch (error) {
-        console.error(error)
-        return new Response("Failed to update todo", {status: 500});
+        console.log(3)
+        console.log(updatedTodo)
+
+        return new Response(JSON.stringify({
+            message: "Todo updated successfully!",
+            todo: updatedTodo,
+            toastStatus: "success"
+        }), {status: 200});
+
+    } catch (error: unknown) {
+        console.error("Error updating todo:", error);
+
+        return new Response(JSON.stringify({
+            message: "Failed to update todo",
+            error: error.message,
+            toastStatus: "error"
+        }), {status: 500});
     }
-}
+};
