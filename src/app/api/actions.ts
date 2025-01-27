@@ -141,3 +141,36 @@ export const createTodo = async (_prevState: unknown, data: FormData) => {
         };
     }
 }
+
+export const updateTodo = async (_prevState: unknown, data: FormData) => {
+    const {title, description, checked} = Object.fromEntries(data.entries()) as Record<string, string>;
+
+    try {
+        const response = await Api.post('/api/todo/edit', {title, description, checked})
+
+        if (response.status === 201) {
+            return {
+                toast: 'Todo created Successfully!',
+                toastStatus: 'success',
+            }
+        }
+
+    } catch (e: unknown) {
+        if (e instanceof z.ZodError) {
+            const errors = e.flatten().fieldErrors;
+            return {
+                email: errors.email?.[0] || 'undefined',
+                password: errors.password?.[0] || 'undefined',
+                toast: 'Bad Attempt',
+                toastStatus: 'info',
+            };
+        }
+
+        return {
+            email: "Unexpected error",
+            password: "Unexpected error",
+            toast: e.message || 'Server Error',
+            toastStatus: e.toastStatus || 'error',
+        };
+    }
+}
