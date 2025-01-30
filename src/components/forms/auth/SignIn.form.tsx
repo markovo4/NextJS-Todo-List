@@ -31,14 +31,14 @@ const SignInForm = () => {
     }, [pending, state]);
 
     return (
-        <form className={'flex flex-col items-center gap-3'} action={action}>
+        <form className={'flex flex-col items-center'} action={action}>
             <InputComponent
-                type={'email'}
+                type={'text'}
                 id={'email'}
                 name={'email'}
                 value={formData.email}
                 onChange={handleChange}
-                label={"email"}
+                label={"E-mail"}
                 errorMessage={state?.email}
             />
 
@@ -48,12 +48,12 @@ const SignInForm = () => {
                 name={'password'}
                 value={formData.password}
                 onChange={handleChange}
-                label={"password"}
+                label={"Password"}
                 errorMessage={state?.password}
             />
 
             <button type={'submit'}
-                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[200px] rounded-md mt-2')}
+                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[224px] rounded-md mt-2 py-1')}
                     disabled={pending}
             >
                 Submit

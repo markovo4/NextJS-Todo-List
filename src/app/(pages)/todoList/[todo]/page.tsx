@@ -47,8 +47,11 @@ const EditTodoForm = () => {
     }, [todoId]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const {name, type, checked, value} = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked || false : value
+        });
     };
 
     if (loading) {
@@ -56,54 +59,56 @@ const EditTodoForm = () => {
     }
 
     return (
-        <div className="flex justify-center pt-10 w-[300px] mx-auto">
-            <h1 className="text-center text-3xl font-bold">Edit Todo</h1>
-            <form
-                className="flex flex-col items-center gap-3"
-                action={action}
-            >
-                <InputComponent
-                    value={formData.title}
-                    onChange={handleChange}
-                    label="Title"
-                    id="title"
-                    type="text"
-                    name="title"
-                    errorMessage={state?.title}
-                />
-
-                <InputComponent
-                    value={formData.description}
-                    onChange={handleChange}
-                    label="Description"
-                    id="description"
-                    type="text"
-                    name="description"
-                    errorMessage={state?.description}
-                />
-
-                <div className="flex items-center gap-2">
-                    <label className="font-semibold">Completed:</label>
-                    <input
-                        type="checkbox"
-                        checked={formData.completed}
-                        onChange={() =>
-                            setFormData({
-                                ...formData,
-                                completed: !formData.completed,
-                            })
-                        }
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="bg-blue-800 w-full rounded-md text-white py-2"
-                    disabled={pending}
+        <div className='flex items-center flex-col '>
+            <h1 className='text-center text-3xl font-bold py-20'>Edit Todo</h1>
+            <div className='bg-gray-500 w-[400px] h-[300px] flex justify-center items-center rounded-2xl'>
+                <form
+                    className="flex flex-col items-center gap-3"
+                    action={action}
                 >
-                    {pending ? "Updating..." : "Submit"}
-                </button>
-            </form>
+                    <InputComponent
+                        value={formData.title}
+                        onChange={handleChange}
+                        label="Title"
+                        id="title"
+                        type="text"
+                        name="title"
+                        errorMessage={state?.title}
+                    />
+
+                    <InputComponent
+                        value={formData.description}
+                        onChange={handleChange}
+                        label="Description"
+                        id="description"
+                        type="text"
+                        name="description"
+                        errorMessage={state?.description}
+                    />
+
+                    <div className="w-full flex items-center gap-2">
+                        <label htmlFor="completed" className="font-semibold flex items-center gap-2 cursor-pointer">
+                            <input
+                                id="completed"
+                                type="checkbox"
+                                name="completed"
+                                className="w-5 h-5 cursor-pointer accent-blue-600" // Added styles
+                                checked={formData.completed}
+                                onChange={handleChange}
+                            />
+                            Completed
+                        </label>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="bg-blue-800 w-full rounded-md text-white py-2"
+                        disabled={pending}
+                    >
+                        {pending ? "Updating..." : "Submit"}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

@@ -143,10 +143,16 @@ export const createTodo = async (_prevState: unknown, data: FormData) => {
 }
 
 export const updateTodo = async (_prevState: unknown, data: FormData) => {
-    const {title, description} = Object.fromEntries(data.entries()) as Record<string, string>;
+    const {title, description, completed} = Object.fromEntries(data.entries()) as Record<string, string>;
+
     const todoId = window.location.pathname.split('/').at(-1);
     try {
-        const response = await Api.put('/api/todo/edit', {todoId, title, description, completed: false})
+        const response = await Api.put('/api/todo/edit', {
+            todoId,
+            title,
+            description,
+            completed: EnumCompleted[completed] || false
+        })
 
         if (response.status === 201) {
             return {
@@ -173,4 +179,9 @@ export const updateTodo = async (_prevState: unknown, data: FormData) => {
             toastStatus: e.toastStatus || 'error',
         };
     }
+}
+
+enum EnumCompleted {
+    on = true,
+    off = false,
 }

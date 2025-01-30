@@ -29,21 +29,21 @@ const Todolist = () => {
         fetchTodos();
     }, []);
 
-    // const handleCheckboxToggle = async (todoId: string, newStatus: boolean) => {
-    //     try {
-    //         await Api.post("/api/todo/update", {todoId, completed: newStatus});
-    //
-    //         setTodos((prevTodos) =>
-    //             prevTodos.map((todo) =>
-    //                 todo.id === todoId ? {...todo, completed: newStatus} : todo
-    //             )
-    //         );
-    //
-    //         toast(`Todo marked as ${newStatus ? "Completed" : "Pending"}`, {type: "success"});
-    //     } catch (error) {
-    //         toast("Failed to update todo", {type: "error"});
-    //     }
-    // };
+    const handleCheckboxToggle = async (todoId: string, newStatus: boolean) => {
+        try {
+            await Api.put("/api/todo/update", {todoId, completed: newStatus});
+
+            setTodos((prevTodos) =>
+                prevTodos.map((todo) =>
+                    todo.id === todoId ? {...todo, completed: newStatus} : todo
+                )
+            );
+
+            toast(`Todo marked as ${newStatus ? "Completed" : "Pending"}`, {type: "success"});
+        } catch (error) {
+            toast("Failed to update todo", {type: "error"});
+        }
+    };
 
 
     return (
@@ -70,12 +70,12 @@ const Todolist = () => {
 
                             <div className='flex items-center gap-3'>
                                 <label>Is completed?</label>
-                                {/*<input*/}
-                                {/*    className='bg-white w-3 h-3'*/}
-                                {/*    type="checkbox"*/}
-                                {/*    checked={todo.completed}*/}
-                                {/*    onChange={() => handleCheckboxToggle(todo.id, !todo.completed)}*/}
-                                {/*/>*/}
+                                <input
+                                    className='bg-white w-3 h-3'
+                                    type="checkbox"
+                                    checked={todo.completed}
+                                    onChange={() => handleCheckboxToggle(todo.id, !todo.completed)}
+                                />
                             </div>
                             <div className='flex items-center gap-5 text-amber-50 font-bold'>
                                 <Link href={`/todoList/${todo.id}`}>
