@@ -153,7 +153,6 @@ export const updateTodo = async (_prevState: unknown, data: FormData) => {
             description,
             completed: EnumCompleted[completed] || false
         })
-
         if (response.status === 201) {
             return {
                 toast: 'Todo created Successfully!',

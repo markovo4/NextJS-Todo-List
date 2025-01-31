@@ -6,6 +6,7 @@ import {updateTodo} from "@/app/api/actions"; // ✅ Correct action for updating
 import {toast} from "react-toastify";
 import Api from "@/lib/api";
 import {usePathname} from "next/navigation";
+import {useQueryClient} from "@tanstack/react-query";
 
 const initialValues = {
     title: "",
@@ -16,9 +17,11 @@ const initialValues = {
 const EditTodoForm = () => {
     const pathname = usePathname();
     const todoId = pathname.split("/").at(-1);
+    const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState(initialValues);
     const [loading, setLoading] = useState(true);
+    const [isChecked, setIsChecked] = useState(formData.completed);
 
     const [state, action, pending] = useActionState(updateTodo, null)
 
@@ -32,9 +35,8 @@ const EditTodoForm = () => {
                 setFormData({
                     title: response.data.title || "",
                     description: response.data.description || "",
-                    completed: response.data.completed || false,
+                    completed: response.data.completed,
                 });
-
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch todo", error);
@@ -50,7 +52,7 @@ const EditTodoForm = () => {
         const {name, type, checked, value} = e.target;
         setFormData({
             ...formData,
-            [name]: type === 'checkbox' ? checked || false : value
+            [name]: type === 'checkbox' ? setIsChecked(checked || false) : value
         });
     };
 
@@ -93,7 +95,7 @@ const EditTodoForm = () => {
                                 type="checkbox"
                                 name="completed"
                                 className="w-5 h-5 cursor-pointer accent-blue-600" // Added styles
-                                checked={formData.completed}
+                                checked={isChecked}
                                 onChange={handleChange}
                             />
                             Completed
@@ -104,6 +106,7 @@ const EditTodoForm = () => {
                         type="submit"
                         className="bg-blue-800 w-full rounded-md text-white py-2"
                         disabled={pending}
+                        onClick={() => queryClient.invalidateQueries(['todos'])}
                     >
                         {pending ? "Updating..." : "Submit"}
                     </button>

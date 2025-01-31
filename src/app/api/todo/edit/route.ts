@@ -6,7 +6,7 @@ export const PUT = async (request: Request) => {
         const {todoId, title, description, completed} = body;
 
         // Validate todoId and completed (completed should be a boolean if provided)
-        if (!todoId || (completed !== undefined && typeof completed !== "boolean")) {
+        if (!todoId) {
             return new Response(JSON.stringify({
                 message: "Invalid input parameters",
                 toastStatus: "error"

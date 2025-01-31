@@ -1,44 +1,34 @@
 'use client'
 import CreateTodoForm from "@/components/forms/todo/Create.todo.form";
-import {useEffect, useState} from "react";
 import Api from "@/lib/api";
 import {toast} from "react-toastify";
 import {getTodosQuery} from "@/app/api/query/useGetTodos.query";
 import Link from "next/link";
+import {useEffect} from "react";
+import {useQueryClient} from "@tanstack/react-query";
 
 const Todolist = () => {
-    const [todos, setTodos] = useState<TSingleTodo[]>([]);
+    const data = getTodosQuery();
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        console.log(1)
+    }, [data?.data])
 
     const handleDelete = async (todoId: string) => {
         try {
             await Api.post("/api/todo/delete", {todoId});
             toast("Todo deleted", {type: "success"});
-
-            setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
+            await queryClient.invalidateQueries(["todos"]);
         } catch (error) {
             toast("Failed to delete todo", {type: "error"});
         }
     };
 
-    useEffect(() => {
-        async function fetchTodos() {
-            const data = await getTodosQuery();
-            setTodos(data);
-        }
-
-        fetchTodos();
-    }, []);
-
     const handleCheckboxToggle = async (todoId: string, newStatus: boolean) => {
         try {
-            await Api.put("/api/todo/update", {todoId, completed: newStatus});
-
-            setTodos((prevTodos) =>
-                prevTodos.map((todo) =>
-                    todo.id === todoId ? {...todo, completed: newStatus} : todo
-                )
-            );
-
+            await Api.put("/api/todo/edit", {todoId, completed: newStatus});
+            await queryClient.invalidateQueries(["todos"]);
             toast(`Todo marked as ${newStatus ? "Completed" : "Pending"}`, {type: "success"});
         } catch (error) {
             toast("Failed to update todo", {type: "error"});
@@ -47,15 +37,15 @@ const Todolist = () => {
 
 
     return (
-        <div className='flex flex-col gap-10 pt-10'>
+        data?.data && <div className='flex flex-col gap-10 pt-10'>
             <h1 className='text-center text-3xl font-bold'>TodoList</h1>
             <div>
                 <CreateTodoForm/>
             </div>
             <div className='flex flex-wrap gap-3 justify-center'>
                 {/* Render the list of todos */}
-                {todos?.length > 0 ? (
-                    todos.map((todo) => (
+                {data?.data?.length > 0 ? (
+                    data?.data.map((todo) => (
                         <div key={todo.id}
                              className='bg-blue-100 text-black p-5 w-[30%] rounded-md flex flex-col gap-3'>
                             <div className='flex gap-3'>
@@ -80,6 +70,7 @@ const Todolist = () => {
                             <div className='flex items-center gap-5 text-amber-50 font-bold'>
                                 <Link href={`/todoList/${todo.id}`}>
                                     <button className={'bg-cyan-600 px-2 py-1 rounded-md text-sm'}
+                                            onClick={() => queryClient.invalidateQueries(["todos"])}
                                     >
                                         Edit Todo
                                     </button>
