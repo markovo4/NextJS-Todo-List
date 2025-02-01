@@ -24,7 +24,7 @@ export const GET = async (req: NextRequest) => {
     } catch (error) {
         console.error("Error fetching todo:", error);
         return NextResponse.json(
-            {message: "Failed to retrieve todo!", error: error.message},
+            {message: "Failed to retrieve todo!", error: (error as { message: string }).message},
             {status: 500}
         );
     }

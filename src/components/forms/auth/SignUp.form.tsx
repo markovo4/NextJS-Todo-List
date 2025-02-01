@@ -11,6 +11,7 @@ export const initialValues = {
     email: '',
     password: '',
     name: '',
+    lastName: '',
 };
 
 const SignUpForm = () => {
@@ -41,6 +42,26 @@ const SignUpForm = () => {
         <form className={'flex flex-col items-center'} action={action}>
             <InputComponent
                 type={'text'}
+                id={'name'}
+                name={'name'}
+                value={formData.name}
+                onChange={handleChange}
+                label={"Name"}
+                errorMessage={state?.name}
+            />
+
+            <InputComponent
+                type={'text'}
+                id={'lastName'}
+                name={'lastName'}
+                value={formData.lastName}
+                onChange={handleChange}
+                label={"Last Name"}
+                errorMessage={state?.lastName}
+            />
+            
+            <InputComponent
+                type={'text'}
                 id={'email'}
                 name={'email'}
                 value={formData.email}
@@ -59,19 +80,9 @@ const SignUpForm = () => {
                 errorMessage={state?.password}
             />
 
-            <InputComponent
-                type={'text'}
-                id={'name'}
-                name={'name'}
-                value={formData.name}
-                onChange={handleChange}
-                label={"Name"}
-                errorMessage={state?.name}
-            />
-
             <button
                 type={'submit'}
-                className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[224px] rounded-md mt-2 py-1')}
+                className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'hover:bg-gray-300 transition text-black w-[224px] rounded-md mt-2 py-1')}
                 disabled={pending}
             >
                 Submit

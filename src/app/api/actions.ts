@@ -7,9 +7,9 @@ import Api from "@/lib/api";
 import {setCookie} from "cookies-next";
 
 export const regUser = async (_prevState: unknown, data: FormData) => {
-    const {name, email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
+    const {name, lastName, email, password} = Object.fromEntries(data.entries()) as Record<string, string>;
     try {
-        const validatedData = signUpValidationSchema.parse({name, email, password});
+        const validatedData = signUpValidationSchema.parse({name, email, password, lastName});
         const response = await Api.post("/api/auth/signUp", validatedData);
         if (response.status === 201) {
             return {
@@ -25,12 +25,13 @@ export const regUser = async (_prevState: unknown, data: FormData) => {
                 email: errors.email?.[0] || undefined,
                 password: errors.password?.[0] || undefined,
                 name: errors.name?.[0] || undefined,
+                lastName: errors.lastName?.[0] || undefined,
                 toast: 'Bad Attempt',
                 toastStatus: 'info',
                 redirect: null
             };
         }
-        if (e.status === 409) {
+        if ((e as { status: number }).status === 409) {
             return {
                 email: undefined,
                 password: undefined,
@@ -88,7 +89,7 @@ export const logUser = async (_prevState: unknown, data: FormData) => {
                 redirect: null,
             };
         }
-        if (e.status === 404) {
+        if ((e as { status: number }).status === 404) {
             return {
                 email: undefined,
                 password: undefined,
@@ -136,8 +137,8 @@ export const createTodo = async (_prevState: unknown, data: FormData) => {
         return {
             email: "Unexpected error",
             password: "Unexpected error",
-            toast: e.message || 'Server Error',
-            toastStatus: e.toastStatus || 'error',
+            toast: (e as { message: string }).message || 'Server Error',
+            toastStatus: (e as { toastStatus: string }).toastStatus || 'error',
         };
     }
 }
@@ -151,7 +152,7 @@ export const updateTodo = async (_prevState: unknown, data: FormData) => {
             todoId,
             title,
             description,
-            completed: EnumCompleted[completed] || false
+            completed: !!completed
         })
         if (response.status === 201) {
             return {
@@ -174,13 +175,8 @@ export const updateTodo = async (_prevState: unknown, data: FormData) => {
         return {
             title: "Unexpected error",
             description: "Unexpected error",
-            toast: e.message || 'Server Error',
-            toastStatus: e.toastStatus || 'error',
+            toast: (e as { message: string }).message || 'Server Error',
+            toastStatus: (e as { toastStatus: string }).toastStatus || 'error',
         };
     }
-}
-
-enum EnumCompleted {
-    on = true,
-    off = false,
 }

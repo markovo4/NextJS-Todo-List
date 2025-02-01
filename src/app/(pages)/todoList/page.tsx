@@ -2,25 +2,20 @@
 import CreateTodoForm from "@/components/forms/todo/Create.todo.form";
 import Api from "@/lib/api";
 import {toast} from "react-toastify";
-import {getTodosQuery} from "@/app/api/query/useGetTodos.query";
 import Link from "next/link";
-import {useEffect} from "react";
 import {useQueryClient} from "@tanstack/react-query";
+import {useGetTodosQuery} from "@/app/api/query/useGetTodos.query";
 
 const Todolist = () => {
-    const data = getTodosQuery();
+    const data = useGetTodosQuery();
     const queryClient = useQueryClient();
-
-    useEffect(() => {
-        console.log(1)
-    }, [data?.data])
 
     const handleDelete = async (todoId: string) => {
         try {
             await Api.post("/api/todo/delete", {todoId});
             toast("Todo deleted", {type: "success"});
-            await queryClient.invalidateQueries(["todos"]);
-        } catch (error) {
+            await queryClient.invalidateQueries({queryKey: ["todos"]});
+        } catch (err) {
             toast("Failed to delete todo", {type: "error"});
         }
     };
@@ -28,9 +23,9 @@ const Todolist = () => {
     const handleCheckboxToggle = async (todoId: string, newStatus: boolean) => {
         try {
             await Api.put("/api/todo/edit", {todoId, completed: newStatus});
-            await queryClient.invalidateQueries(["todos"]);
+            await queryClient.invalidateQueries({queryKey: ["todos"]});
             toast(`Todo marked as ${newStatus ? "Completed" : "Pending"}`, {type: "success"});
-        } catch (error) {
+        } catch (err) {
             toast("Failed to update todo", {type: "error"});
         }
     };
@@ -70,7 +65,7 @@ const Todolist = () => {
                             <div className='flex items-center gap-5 text-amber-50 font-bold'>
                                 <Link href={`/todoList/${todo.id}`}>
                                     <button className={'bg-cyan-600 px-2 py-1 rounded-md text-sm'}
-                                            onClick={() => queryClient.invalidateQueries(["todos"])}
+                                            onClick={() => queryClient.invalidateQueries({queryKey: ["todos"]})}
                                     >
                                         Edit Todo
                                     </button>

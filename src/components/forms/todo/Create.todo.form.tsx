@@ -5,6 +5,7 @@ import {ChangeEvent, useActionState, useEffect, useState} from "react";
 import {createTodo} from "@/app/api/actions";
 import {toast} from "react-toastify";
 import {useQueryClient} from "@tanstack/react-query";
+import clsx from "clsx";
 
 const initialValues = {
     title: '',
@@ -56,7 +57,7 @@ const CreateTodoForm = () => {
 
                     <button
                         type="submit"
-                        className="bg-blue-800 w-full rounded-md text-white py-2"
+                        className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'hover:bg-gray-300 transition text-black w-[224px] rounded-md mt-2 py-1')}
                         disabled={pending}
                     >
                         {pending ? "Creating..." : "Submit"}
