@@ -106,7 +106,7 @@ const EditTodoForm = () => {
                         type="submit"
                         className="bg-blue-800 w-full rounded-md text-white py-2"
                         disabled={pending}
-                        onClick={() => queryClient.invalidateQueries(['todos'])}
+                        onClick={() => queryClient.invalidateQueries({queryKey: ['todos']})}
                     >
                         {pending ? "Updating..." : "Submit"}
                     </button>

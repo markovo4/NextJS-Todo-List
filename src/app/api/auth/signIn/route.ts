@@ -27,11 +27,14 @@ export async function POST(req: NextRequest) {
             res,
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 24, // 1 day
+            maxAge: 60 * 60, // 1 day
         });
 
         return res;
     } catch (error) {
-        return NextResponse.json({message: "Login failed", error: error.message}, {status: 500});
+        return NextResponse.json({
+            message: "Login failed",
+            error: (error as { message: string }).message
+        }, {status: 500});
     }
 }

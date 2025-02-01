@@ -6,7 +6,7 @@ export async function generateJWT(userId: string) {
     return new SignJWT({userId})
         .setProtectedHeader({alg: 'HS256'})
         .setIssuedAt()
-        .setExpirationTime('24h')
+        .setExpirationTime('1h')
         .sign(secretKey)
 }
 

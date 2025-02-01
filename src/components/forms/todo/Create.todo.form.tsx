@@ -28,7 +28,7 @@ const CreateTodoForm = () => {
     useEffect(() => {
         if (!pending && state?.toast) {
             notify();
-            queryClient.invalidateQueries(['todos'])
+            queryClient.invalidateQueries({queryKey: ['todos']})
         }
 
     }, [pending, state]);
