@@ -53,7 +53,7 @@ const SignInForm = () => {
             />
 
             <button type={'submit'}
-                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'text-black w-[224px] rounded-md mt-2 py-1')}
+                    className={clsx(pending ? 'bg-gray-500' : 'bg-blue-100', 'hover:bg-gray-300 transition text-black w-[224px] rounded-md mt-2 py-1')}
                     disabled={pending}
             >
                 Submit
